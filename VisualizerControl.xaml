@@ -1,45 +1,127 @@
-<UserControl x:Class="VisuAIlizer.VisualizerToolWindowControl"
+<UserControl x:Class="VisuAIizer.VisualizerToolWindowControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-             mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="1000">
+             mc:Ignorable="d">
 
-    <Grid Margin="10" RowDefinitions="Auto, Auto, *" VerticalAlignment="Stretch">
+    <Grid Background="#0D0D0D"> <!-- Deep futuristic dark -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-        <!-- Row 1 - Select Project Location -->
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <Button x:Name="BtnSelectProject"
-                    Content="Select Project Location"
-                    Width="200"
-                    Height="30"
-                    Margin="0,0,10,0"/>
+        <!-- Title / Header -->
+        <TextBlock Text="Visu[AI]lizer"
+                   Grid.Row="0"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   FontSize="32"
+                   FontWeight="Bold"
+                   Foreground="#C5F6FF"
+                   Opacity="0.8"/>
+
+        <!-- 🌌 CENTER BUTTONS WITH FUTURISTIC STYLE -->
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="0 20">
+
+            <Button Content="Code Flow"
+                    Width="160"
+                    Height="55"
+                    Margin="12 0"
+                    Style="{StaticResource FuturisticButtonStyle}"/>
+
+            <Button Content="Architecture Diagram"
+                    Width="220"
+                    Height="55"
+                    Margin="12 0"
+                    Style="{StaticResource FuturisticButtonStyle}"/>
         </StackPanel>
 
-        <!-- Row 2 - Code Flow + Architecture Diagram buttons -->
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="1"
-                    Margin="0,0,0,10">
-            <Button x:Name="BtnCodeFlow"
-                    Content="Code Flow"
-                    Width="150"
-                    Height="30"
-                    Margin="0,0,10,0"/>
+        <!-- Resources: FUTURISTIC BUTTON STYLE -->
+        <UserControl.Resources>
 
-            <Button x:Name="BtnArchitecture"
-                    Content="Architecture Diagram"
-                    Width="200"
-                    Height="30"/>
-        </StackPanel>
+            <!-- ⭐ Futuristic Glass Button Style -->
+            <Style x:Key="FuturisticButtonStyle" TargetType="Button">
+                <Setter Property="Foreground" Value="#E6FFFFFF"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Padding" Value="10 6"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#2A2F38" Offset="0"/>
+                            <GradientStop Color="#1B1D24" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="BorderBrush" Value="#4AF0FF"/>
+                <Setter Property="BorderThickness" Value="1.5"/>
+                <Setter Property="CornerRadius" Value="18"/>
 
-        <!-- Row 3 - WebView2 container -->
-        <Border Grid.Row="2"
-                BorderBrush="Gray"
-                BorderThickness="1">
-            <wv2:WebView2 x:Name="WebPanel" />
-        </Border>
+                <!-- Hover Animation -->
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Border x:Name="border"
+                                        CornerRadius="18"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        Background="{TemplateBinding Background}"
+                                        SnapsToDevicePixels="True"
+                                        >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#4AF0FF"
+                                                          ShadowDepth="0"
+                                                          BlurRadius="18"
+                                                          Opacity="0.0"/>
+                                    </Border.Effect>
+                                </Border>
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <ControlTemplate.Triggers>
+                                <!-- Hover -->
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="BorderBrush" Value="#7CFCFF"/>
+                                    <Setter TargetName="border" Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#32404D" Offset="0"/>
+                                                <GradientStop Color="#1C2328" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter TargetName="border" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect Color="#4AF0FF"
+                                                              ShadowDepth="0"
+                                                              BlurRadius="30"
+                                                              Opacity="0.45"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+
+                                <!-- Pressed -->
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#15181C"/>
+                                    <Setter TargetName="border" Property="BorderBrush" Value="#34DCEA"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+            </Style>
+        </UserControl.Resources>
 
     </Grid>
 </UserControl>
