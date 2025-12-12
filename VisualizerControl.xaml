@@ -33,7 +33,7 @@
             </Grid.ColumnDefinitions>
 
             <Button x:Name="BtnSelectProject" Content="Select Project Location" Height="36" MinWidth="220" Grid.Column="0"
-                    Style="{StaticResource FuturisticSmallButton}" />
+                    Style="{StaticResource FuturisticSmallButton}" Click="OnSelectProjectClick" />
 
             <TextBox x:Name="TxtProjectPath" Grid.Column="2" Height="32" VerticalContentAlignment="Center" 
                      IsReadOnly="True" Text="No project selected" Margin="0,0,4,0"
@@ -43,9 +43,9 @@
         <!-- ================= Centered Buttons Row ================= -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,14" >
             <Button x:Name="BtnCodeFlow" Content="Code Flow" Width="180" Height="56" Margin="10,0"
-                    Style="{StaticResource FuturisticButtonStyle}"/>
+                    Style="{StaticResource FuturisticButtonStyle}" Click="OnCodeFlowClick"/>
             <Button x:Name="BtnArchitecture" Content="Architecture Diagram" Width="240" Height="56" Margin="10,0"
-                    Style="{StaticResource FuturisticButtonStyle}"/>
+                    Style="{StaticResource FuturisticButtonStyle}" Content="OnArchitectureClick"/>
         </StackPanel>
 
         <!-- ================= Diagram Area (WebView2) ================= -->
