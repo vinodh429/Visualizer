@@ -7,27 +7,33 @@ namespace VisuAIlizer.Services
     public class PythonAnalyzerService
     {
         public object AnalyzePythonFile(string filePath)
-        {
-            string exe = "python"; // assumes python is in PATH
-            string script = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "py_ast_extractor.py");
+{
+    // Get installed VSIX location
+    var extensionRoot = Path.GetDirectoryName(
+        typeof(VisuAIlizer.VisualizerToolWindowControl).Assembly.Location
+    );
 
-            if (!File.Exists(script))
-                throw new FileNotFoundException("Missing script: " + script);
+    string script = Path.Combine(extensionRoot, "ExternalScripts", "py_ast_extractor.py");
 
-            var psi = new ProcessStartInfo
-            {
-                FileName = exe,
-                Arguments = $"\"{script}\" \"{filePath}\"",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
+    if (!File.Exists(script))
+    {
+        throw new FileNotFoundException("Python AST script not found at: " + script);
+    }
 
-            var proc = Process.Start(psi);
-            string output = proc.StandardOutput.ReadToEnd();
-            proc.WaitForExit();
+    var psi = new ProcessStartInfo
+    {
+        FileName = "python",
+        Arguments = $"\"{script}\" \"{filePath}\"",
+        RedirectStandardOutput = true,
+        UseShellExecute = false,
+        CreateNoWindow = true
+    };
 
-            return JsonSerializer.Deserialize<object>(output);
-        }
+    var proc = Process.Start(psi);
+    string output = proc.StandardOutput.ReadToEnd();
+    proc.WaitForExit();
+
+    return JsonSerializer.Deserialize<object>(output);
+}
     }
 }
