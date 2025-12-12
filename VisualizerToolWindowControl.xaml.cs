@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Web.WebView2.Core;
+using System.Threading.Tasks;
 
 namespace Visualizer
 {
@@ -14,6 +16,8 @@ namespace Visualizer
         public VisualizerToolWindowControl()
         {
             InitializeComponent();
+            InitializeWebViewAsync();
+
         }
 
         private void OnSelectProjectClick(object sender, RoutedEventArgs e)
@@ -65,5 +69,69 @@ namespace Visualizer
 
             MessageBox.Show("Architecture Diagram generation triggered!");
         }
+
+        private async void InitializeWebViewAsync()
+{
+    try
+    {
+        // Required for VSIX – WebView2 cannot use default temp directory
+        string dataFolder = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "VisuAILizer",
+            "WebView2");
+
+        Directory.CreateDirectory(dataFolder);
+
+        var env = await CoreWebView2Environment.CreateAsync(null, dataFolder);
+
+        await WebPanel.EnsureCoreWebView2Async(env);
+
+        // Load a blank HTML shell where diagrams will appear
+        string html = @"
+            <html>
+            <head>
+                <style>
+                    body {
+                        margin: 0;
+                        background-color: #0A0F14;
+                        color: white;
+                        font-family: Segoe UI;
+                    }
+                </style>
+            </head>
+            <body>
+                <div id='diagramArea'>
+                    <h3 style='color:#88D7E0;margin-top:20px;text-align:center;'>
+                        Diagram will appear here...
+                    </h3>
+                </div>
+            </body>
+            </html>";
+
+        WebPanel.NavigateToString(html);
+    }
+    catch (Exception ex)
+    {
+        System.Windows.MessageBox.Show("WebView2 init failed: " + ex.Message);
+    }
+}
+
+private async Task SetDiagramHtml(string htmlContent)
+{
+    if (WebPanel?.CoreWebView2 == null)
+        return;
+
+    string escaped = htmlContent
+        .Replace("\\", "\\\\")
+        .Replace("\"", "\\\"")
+        .Replace("\r", "")
+        .Replace("\n", "\\n");
+
+    string js = $@"
+        document.getElementById('diagramArea').innerHTML = ""{escaped}"";
+    ";
+
+    await WebPanel.CoreWebView2.ExecuteScriptAsync(js);
+}
     }
 }
