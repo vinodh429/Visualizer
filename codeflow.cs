@@ -1,6 +1,6 @@
 private void ShowMermaidDiagram(string mermaid)
 {
-    string escapedMermaid = System.Net.WebUtility.HtmlEncode(mermaid);
+    string escaped = System.Net.WebUtility.HtmlEncode(mermaid);
 
     string html = $@"
 <!DOCTYPE html>
@@ -10,31 +10,33 @@ private void ShowMermaidDiagram(string mermaid)
   <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
   <script>
     mermaid.initialize({{
-        startOnLoad: false,
-        theme: 'dark'
+      startOnLoad: false,
+      theme: 'dark'
     }});
 
-    function renderDiagram() {{
-        const code = document.getElementById('src').innerText;
-
-        try {{
-            mermaid.parse(code);   // 🔴 SYNTAX CHECK
-            document.getElementById('diagram').innerHTML = '<div class=""mermaid"">' + code + '</div>';
-            mermaid.init(undefined, document.querySelectorAll('.mermaid'));
-        }} catch (err) {{
-            document.getElementById('diagram').innerHTML = `
-                <div style='color:#ff6b6b; font-family:Consolas;'>
-                    <h3>⚠ Mermaid syntax error</h3>
-                    <pre>${{err.message}}</pre>
-                </div>
-            `;
-        }}
+    function render() {{
+      const code = document.getElementById('src').innerText;
+      try {{
+        mermaid.parse(code);
+        document.getElementById('view').innerHTML =
+          '<div class=""mermaid"">' + code + '</div>';
+        mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+      }} catch (err) {{
+        // 🔥 AUTO SEND ERROR TO HOST
+        window.chrome.webview.postMessage({{
+          type: 'mermaid_error',
+          error: err.message,
+          code: code
+        }});
+      }}
     }}
   </script>
 </head>
-<body style='margin:0;background:#0e1726;color:white;padding:16px;' onload='renderDiagram()'>
-  <pre id='src' style='display:none;'>{escapedMermaid}</pre>
-  <div id='diagram'></div>
+
+<body style='margin:0;background:#0e1726;color:white;padding:16px'
+      onload='render()'>
+  <pre id='src' style='display:none'>{escaped}</pre>
+  <div id='view'></div>
 </body>
 </html>";
 
