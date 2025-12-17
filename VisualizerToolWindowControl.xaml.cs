@@ -116,6 +116,24 @@ namespace Visualizer
     }
 }
 
+private void ShowMermaidDiagram(string mermaid)
+{
+    string html = $@"
+<html>
+<head>
+  <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
+  <script>mermaid.initialize({{ startOnLoad: true, theme: 'dark' }});</script>
+</head>
+<body style='margin:0;background:#0e1726;color:white;'>
+<div class='mermaid' style='padding:20px;'>
+{mermaid}
+</div>
+</body>
+</html>";
+
+    WebPanel.NavigateToString(html);
+}
+
 private async Task SetDiagramHtml(string htmlContent)
 {
     if (WebPanel?.CoreWebView2 == null)
