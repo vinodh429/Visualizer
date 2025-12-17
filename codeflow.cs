@@ -1,44 +1,35 @@
-private void ShowMermaidDiagram(string mermaid)
+private async Task AutoFixMermaidAsync(string brokenMermaid, string error)
 {
-    string escaped = System.Net.WebUtility.HtmlEncode(mermaid);
+    StatusText.Text = "Fixing diagram automatically…";
 
-    string html = $@"
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset='utf-8'/>
-  <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
-  <script>
-    mermaid.initialize({{
-      startOnLoad: false,
-      theme: 'dark'
-    }});
+    string fixPrompt = $@"
+The following Mermaid diagram has a SYNTAX ERROR.
 
-    function render() {{
-      const code = document.getElementById('src').innerText;
-      try {{
-        mermaid.parse(code);
-        document.getElementById('view').innerHTML =
-          '<div class=""mermaid"">' + code + '</div>';
-        mermaid.init(undefined, document.querySelectorAll('.mermaid'));
-      }} catch (err) {{
-        // 🔥 AUTO SEND ERROR TO HOST
-        window.chrome.webview.postMessage({{
-          type: 'mermaid_error',
-          error: err.message,
-          code: code
-        }});
-      }}
-    }}
-  </script>
-</head>
+ERROR MESSAGE:
+{error}
 
-<body style='margin:0;background:#0e1726;color:white;padding:16px'
-      onload='render()'>
-  <pre id='src' style='display:none'>{escaped}</pre>
-  <div id='view'></div>
-</body>
-</html>";
+BROKEN MERMAID:
+{brokenMermaid}
 
-    WebPanel.NavigateToString(html);
+TASK:
+- Fix the Mermaid syntax
+- Output ONLY valid Mermaid
+- No markdown
+- No explanations
+- One diagram only
+";
+
+    var fixedMermaid = await _llm.GenerateMermaidDiagramAsync(
+        new { brokenMermaid, error },
+        "fix"
+    );
+
+    fixedMermaid = fixedMermaid
+        .Replace("```mermaid", "")
+        .Replace("```", "")
+        .Trim();
+
+    _lastMermaid = fixedMermaid;
+
+    ShowMermaidDiagram(fixedMermaid);
 }
